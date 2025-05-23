@@ -29,6 +29,38 @@
   --gradient-fire: linear-gradient(45deg, #ff0066 0%, #ff4d94 60%, #ff0066 100%);
 }
 
+/* GENERAL STYLES */
+.section-header {
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.section-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background: var(--gradient-flame);
+  border-radius: 50%;
+  margin-bottom: var(--spacing-sm);
+  box-shadow: var(--glow-effect);
+  animation: pulse 2s infinite;
+}
+
+.section-icon i {
+  color: var(--text-color);
+  font-size: 1.5rem;
+}
+
+.section-header h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  color: var(--primary-color);
+  font-size: 2.5rem;
+  text-shadow: var(--glow-effect);
+  margin: 0;
+}
+
 /* HERO SECTION - SMALLER VERSION */
 .hero-small {
   height: 30vh;
@@ -94,6 +126,22 @@
   position: relative;
   animation: glitch 3s infinite;
   color: var(--primary-color);
+}
+
+/* INTRO SECTION */
+.intro-section {
+  padding: var(--spacing-lg) var(--spacing-md);
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  margin: var(--spacing-md) 0;
+}
+
+.intro-section p {
+  font-size: 1.2rem;
+  color: var(--text-dark);
+  max-width: 600px;
+  margin: 0 auto;
+  font-family: 'Montserrat', sans-serif;
 }
 
 /* RESERVA SECTION */
@@ -784,6 +832,258 @@ select {
   transition: var(--transition);
 }
 
+/* FAQS SECTION */
+.faqs-section {
+  padding: var(--spacing-lg) var(--spacing-md);
+  background-color: rgba(0, 0, 0, 0.8);
+  margin: var(--spacing-md) 0;
+  position: relative;
+}
+
+.faqs-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.faq-item {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 0, 102, 0.3);
+  border-radius: var(--border-radius);
+  margin-bottom: var(--spacing-sm);
+  overflow: hidden;
+  transition: var(--transition);
+  backdrop-filter: blur(5px);
+}
+
+.faq-item:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 5px 15px rgba(255, 0, 102, 0.2);
+}
+
+.faq-item.active {
+  border-color: var(--primary-color);
+  box-shadow: var(--glow-effect);
+}
+
+.faq-question {
+  padding: var(--spacing-md);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: var(--transition);
+  background: rgba(255, 0, 102, 0.05);
+}
+
+.faq-question:hover {
+  background: rgba(255, 0, 102, 0.1);
+}
+
+.faq-question h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  color: var(--text-color);
+  font-size: 1.3rem;
+  margin: 0;
+  flex: 1;
+  text-shadow: 0 0 5px rgba(255, 0, 102, 0.5);
+}
+
+.faq-icon {
+  width: 30px;
+  height: 30px;
+  background: var(--gradient-flame);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  box-shadow: var(--glow-effect);
+}
+
+.faq-icon i {
+  color: var(--text-color);
+  font-size: 0.9rem;
+  transition: transform 0.3s ease;
+}
+
+.faq-item.active .faq-icon i {
+  transform: rotate(45deg);
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.3s ease;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.faq-item.active .faq-answer {
+  max-height: 300px;
+  padding: var(--spacing-md);
+}
+
+.faq-answer p {
+  color: var(--text-dark);
+  font-family: 'Montserrat', sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease 0.1s;
+}
+
+.faq-item.active .faq-answer p {
+  opacity: 1;
+}
+
+/* TESTIMONIALS SECTION */
+.testimonials-section {
+  padding: var(--spacing-lg) var(--spacing-md);
+  background: rgba(0, 0, 0, 0.8);
+  margin: var(--spacing-md) 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.testimonials-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, rgba(255, 0, 102, 0.05) 0%, rgba(0, 255, 204, 0.05) 100%);
+  z-index: 0;
+}
+
+.testimonials-container {
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.testimonial-card {
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 0, 102, 0.3);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);
+  text-align: center;
+  display: none;
+  transition: var(--transition);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.testimonial-card.active {
+  display: block;
+  animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.testimonial-rating {
+  margin-bottom: var(--spacing-md);
+}
+
+.testimonial-rating i {
+  color: var(--accent-color);
+  font-size: 1.2rem;
+  margin: 0 2px;
+  text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+}
+
+.testimonial-card p {
+  color: var(--text-color);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: var(--spacing-md);
+  font-style: italic;
+  position: relative;
+}
+
+.testimonial-card p::before,
+.testimonial-card p::after {
+  content: '"';
+  font-size: 3rem;
+  color: var(--primary-color);
+  font-family: 'Times New Roman', serif;
+  position: absolute;
+  opacity: 0.3;
+}
+
+.testimonial-card p::before {
+  top: -10px;
+  left: -20px;
+}
+
+.testimonial-card p::after {
+  bottom: -30px;
+  right: -10px;
+}
+
+.testimonial-author {
+  position: relative;
+}
+
+.testimonial-author::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 2px;
+  background: var(--gradient-flame);
+  border-radius: 1px;
+}
+
+.testimonial-author span {
+  color: var(--secondary-color);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+  text-shadow: var(--glow-effect-turquoise);
+}
+
+.testimonial-dots {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--spacing-lg);
+  gap: var(--spacing-sm);
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: var(--transition);
+  border: 2px solid transparent;
+}
+
+.dot:hover {
+  background: rgba(255, 0, 102, 0.5);
+  transform: scale(1.2);
+}
+
+.dot.active {
+  background: var(--primary-color);
+  border-color: rgba(255, 0, 102, 0.5);
+  box-shadow: var(--glow-effect);
+  transform: scale(1.3);
+}
+
 /* FLOATING EMBERS */
 .floating-embers {
   position: fixed;
@@ -1061,6 +1361,29 @@ select {
     width: 100%;
     justify-content: center;
   }
+  
+  .faq-question {
+    padding: var(--spacing-sm);
+  }
+  
+  .faq-question h3 {
+    font-size: 1.1rem;
+  }
+  
+  .testimonial-card p::before,
+  .testimonial-card p::after {
+    font-size: 2rem;
+  }
+  
+  .testimonial-card p::before {
+    top: -5px;
+    left: -10px;
+  }
+  
+  .testimonial-card p::after {
+    bottom: -20px;
+    right: -5px;
+  }
 }
 
 @media (max-width: 576px) {
@@ -1093,5 +1416,17 @@ select {
   .reserva-info h3:after {
     left: 50%;
     transform: translateX(-50%);
+  }
+  
+  .section-header h2 {
+    font-size: 2rem;
+  }
+  
+  .testimonial-card {
+    padding: var(--spacing-md);
+  }
+  
+  .testimonial-card p {
+    font-size: 1rem;
   }
 }

@@ -753,3 +753,392 @@ document.addEventListener('DOMContentLoaded', function() {
         showNotification('¡Bienvenido a la Intranet! Sistema cargado correctamente.', 'success');
     }, 1000);
 });
+// =========================================================================
+// FUNCIONES ESPECÍFICAS PARA NUEVAS SECCIONES
+// =========================================================================
+
+/**
+ * Inicializa la funcionalidad específica de actas y comunicaciones
+ */
+function initActasComunicaciones() {
+    const actasSearch = document.getElementById('actas-search');
+    const actasSearchBtn = document.getElementById('actas-search-btn');
+    const actasYearFilter = document.getElementById('actas-year-filter');
+    const actasTypeFilter = document.getElementById('actas-type-filter');
+    const noResultsActas = document.getElementById('no-results-actas');
+    const resultsCount = document.getElementById('results-count');
+    
+    if (!actasSearch) return;
+    
+    function filterActasDocuments() {
+        const searchTerm = actasSearch.value.toLowerCase().trim();
+        const selectedYear = actasYearFilter.value;
+        const selectedType = actasTypeFilter.value;
+        const documentItems = document.querySelectorAll('#actas-document-list .document-item');
+        
+        let visibleCount = 0;
+        
+        documentItems.forEach(item => {
+            const title = item.querySelector('h3').textContent.toLowerCase();
+            const description = item.querySelector('.document-description').textContent.toLowerCase();
+            const date = item.querySelector('.document-date').textContent.toLowerCase();
+            const itemYear = item.getAttribute('data-year');
+            const itemType = item.getAttribute('data-type');
+            
+            const matchesSearch = searchTerm === '' || 
+                                 title.includes(searchTerm) || 
+                                 description.includes(searchTerm) || 
+                                 date.includes(searchTerm);
+                                 
+            const matchesYear = selectedYear === 'todos' || selectedYear === itemYear;
+            const matchesType = selectedType === 'todos' || selectedType === itemType;
+            
+            if (matchesSearch && matchesYear && matchesType) {
+                item.style.display = 'flex';
+                visibleCount++;
+                setTimeout(() => {
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }, 50);
+            } else {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    item.style.display = 'none';
+                }, 300);
+            }
+        });
+        
+        // Actualizar contador de resultados
+        if (resultsCount) {
+            resultsCount.textContent = visibleCount;
+        }
+        
+        // Mostrar/ocultar mensaje de sin resultados
+        if (noResultsActas) {
+            if (visibleCount === 0) {
+                noResultsActas.style.display = 'block';
+            } else {
+                noResultsActas.style.display = 'none';
+            }
+        }
+    }
+    
+    // Event listeners
+    if (actasSearchBtn) {
+        actasSearchBtn.addEventListener('click', filterActasDocuments);
+    }
+    
+    if (actasSearch) {
+        actasSearch.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                filterActasDocuments();
+            }
+        });
+        
+        actasSearch.addEventListener('input', debounce(filterActasDocuments, 300));
+    }
+    
+    if (actasYearFilter) {
+        actasYearFilter.addEventListener('change', filterActasDocuments);
+    }
+    
+    if (actasTypeFilter) {
+        actasTypeFilter.addEventListener('change', filterActasDocuments);
+    }
+    
+    // Inicializar filtros
+    filterActasDocuments();
+}
+
+/**
+ * Función para resetear la búsqueda de actas
+ */
+function resetActasSearch() {
+    const actasSearch = document.getElementById('actas-search');
+    const actasYearFilter = document.getElementById('actas-year-filter');
+    const actasTypeFilter = document.getElementById('actas-type-filter');
+    
+    if (actasSearch) actasSearch.value = '';
+    if (actasYearFilter) actasYearFilter.value = '2025';
+    if (actasTypeFilter) actasTypeFilter.value = 'todos';
+    
+    initActasComunicaciones();
+}
+
+/**
+ * Inicializa las interacciones para los cursos de formación
+ */
+function initFormacionCursos() {
+    const cursosButtons = document.querySelectorAll('#formacion-obligatoria .sin-btn-small');
+    
+    cursosButtons.forEach(button => {
+        if (button.textContent.includes('Acceder') || button.textContent.includes('Inscribirse')) {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const originalText = this.innerHTML;
+                const isInscripcion = originalText.includes('Inscribirse');
+                
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+                this.disabled = true;
+                
+                setTimeout(() => {
+                    if (isInscripcion) {
+                        this.innerHTML = '<i class="fas fa-check"></i> Inscrito';
+                        this.classList.add('success');
+                        showGulaTooltip('¡Inscripción completada!');
+                    } else {
+                        this.innerHTML = '<i class="fas fa-play"></i> Iniciar curso';
+                        showGulaTooltip('Accediendo al curso...');
+                    }
+                    
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.disabled = false;
+                        this.classList.remove('success');
+                    }, 3000);
+                }, 1500);
+            });
+        }
+    });
+}
+
+/**
+ * Inicializa efectos especiales para los elementos de riesgo
+ */
+function initRiesgosList() {
+    const riesgoItems = document.querySelectorAll('.riesgo-item');
+    
+    riesgoItems.forEach(item => {
+        item.addEventListener('mouseenter', () => {
+            const icon = item.querySelector('.riesgo-icon');
+            if (icon) {
+                icon.style.transform = 'scale(1.1) rotate(5deg)';
+                icon.style.boxShadow = '0 0 20px rgba(255, 0, 102, 0.3)';
+            }
+        });
+        
+        item.addEventListener('mouseleave', () => {
+            const icon = item.querySelector('.riesgo-icon');
+            if (icon) {
+                icon.style.transform = 'scale(1) rotate(0deg)';
+                icon.style.boxShadow = '';
+            }
+        });
+    });
+}
+
+/**
+ * Anima los pasos del protocolo de emergencias
+ */
+function initEmergencySteps() {
+    const emergencySteps = document.querySelectorAll('.emergency-step');
+    
+    emergencySteps.forEach((step, index) => {
+        step.addEventListener('click', () => {
+            // Efecto de pulso en el número del paso
+            const stepNumber = step.querySelector('.step-number');
+            if (stepNumber) {
+                stepNumber.style.transform = 'scale(1.2)';
+                stepNumber.style.boxShadow = '0 0 15px var(--primary-color)';
+                
+                setTimeout(() => {
+                    stepNumber.style.transform = 'scale(1)';
+                    stepNumber.style.boxShadow = '';
+                }, 300);
+            }
+            
+            showGulaTooltip(`Paso ${index + 1} del protocolo de emergencias`);
+        });
+    });
+}
+
+// =========================================================================
+// INICIALIZACIÓN DE NUEVAS FUNCIONES
+// =========================================================================
+
+// Agregar estas funciones al final de la función principal DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function() {
+    // ... código existente ...
+    
+    // Inicializar nuevas funcionalidades
+    initActasComunicaciones();
+    initFormacionCursos();
+    initRiesgosList();
+    initEmergencySteps();
+    
+    console.log("🔥 Nuevas secciones de GULA Intranet inicializadas");
+});
+// =========================================================================
+// FUNCIONES CORREGIDAS PARA NUEVAS SECCIONES
+// =========================================================================
+
+/**
+ * Función para resetear la búsqueda de actas
+ */
+function resetActasSearch() {
+    const actasSearch = document.getElementById('actas-search');
+    const actasYearFilter = document.getElementById('actas-year-filter');
+    const actasTypeFilter = document.getElementById('actas-type-filter');
+    
+    if (actasSearch) actasSearch.value = '';
+    if (actasYearFilter) actasYearFilter.value = '2025';
+    if (actasTypeFilter) actasTypeFilter.value = 'todos';
+    
+    if (typeof initActasComunicaciones === 'function') {
+        initActasComunicaciones();
+    }
+}
+
+/**
+ * Inicializa la funcionalidad específica de actas y comunicaciones
+ */
+function initActasComunicaciones() {
+    const actasSearch = document.getElementById('actas-search');
+    const actasSearchBtn = document.getElementById('actas-search-btn');
+    const actasYearFilter = document.getElementById('actas-year-filter');
+    const actasTypeFilter = document.getElementById('actas-type-filter');
+    const noResultsActas = document.getElementById('no-results-actas');
+    const resultsCount = document.getElementById('results-count');
+    
+    if (!actasSearch) return;
+    
+    function filterActasDocuments() {
+        const searchTerm = actasSearch.value.toLowerCase().trim();
+        const selectedYear = actasYearFilter ? actasYearFilter.value : 'todos';
+        const selectedType = actasTypeFilter ? actasTypeFilter.value : 'todos';
+        const documentItems = document.querySelectorAll('#actas-document-list .document-item');
+        
+        let visibleCount = 0;
+        
+        documentItems.forEach(item => {
+            const title = item.querySelector('h3').textContent.toLowerCase();
+            const description = item.querySelector('.document-description').textContent.toLowerCase();
+            const date = item.querySelector('.document-date').textContent.toLowerCase();
+            const itemYear = item.getAttribute('data-year');
+            const itemType = item.getAttribute('data-type');
+            
+            const matchesSearch = searchTerm === '' || 
+                                 title.includes(searchTerm) || 
+                                 description.includes(searchTerm) || 
+                                 date.includes(searchTerm);
+                                 
+            const matchesYear = selectedYear === 'todos' || selectedYear === itemYear;
+            const matchesType = selectedType === 'todos' || selectedType === itemType;
+            
+            if (matchesSearch && matchesYear && matchesType) {
+                item.style.display = 'flex';
+                visibleCount++;
+                setTimeout(() => {
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }, 50);
+            } else {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    item.style.display = 'none';
+                }, 300);
+            }
+        });
+        
+        // Actualizar contador de resultados
+        if (resultsCount) {
+            resultsCount.textContent = visibleCount;
+        }
+        
+        // Mostrar/ocultar mensaje de sin resultados
+        if (noResultsActas) {
+            if (visibleCount === 0) {
+                noResultsActas.style.display = 'block';
+            } else {
+                noResultsActas.style.display = 'none';
+            }
+        }
+    }
+    
+    // Event listeners
+    if (actasSearchBtn) {
+        actasSearchBtn.addEventListener('click', filterActasDocuments);
+    }
+    
+    if (actasSearch) {
+        actasSearch.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                filterActasDocuments();
+            }
+        });
+        
+        actasSearch.addEventListener('input', debounce(filterActasDocuments, 300));
+    }
+    
+    if (actasYearFilter) {
+        actasYearFilter.addEventListener('change', filterActasDocuments);
+    }
+    
+    if (actasTypeFilter) {
+        actasTypeFilter.addEventListener('change', filterActasDocuments);
+    }
+    
+    // Inicializar filtros
+    filterActasDocuments();
+}
+
+/**
+ * Función de utilidad para debounce
+ */
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+/**
+ * Inicializa las descargas de documentos
+ */
+function initDocumentDownloads() {
+    const downloadLinks = document.querySelectorAll('.document-download');
+    
+    downloadLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            
+            // Si no hay href o es un enlace placeholder, prevenir y simular descarga
+            if (!href || href === '#') {
+                e.preventDefault();
+                
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Descargando...';
+                
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-check"></i> Descargado';
+                    
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                    }, 1500);
+                }, 800);
+            }
+        });
+    });
+}
+
+// =========================================================================
+// INICIALIZACIÓN AL CARGAR EL DOM
+// =========================================================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Esperar un poco para asegurar que todo está cargado
+    setTimeout(() => {
+        initActasComunicaciones();
+        initDocumentDownloads();
+        
+        console.log("✅ Funciones de GULA Intranet inicializadas correctamente");
+    }, 500);
+});
